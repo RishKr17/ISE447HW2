@@ -1,0 +1,36 @@
+##################
+# Parameters
+##################
+
+param N; # Number of bonds
+param T; # Number of periods
+param L{t in 1..T}; # Liabilities every period
+param P{i in 1..N}; # Bond prices
+param C{i in 1..N}; # Bond coupons
+param M{i in 1..N}; # Bond maturities
+param F{i in 1..N}; # Bond face values
+param r{t in 1..T}; # term structure of interest rates
+param rf; # risk-free cash interest rate
+
+##################
+# Variables
+##################
+
+var x{i in 1..N} >= 0; # number of bonds to buy
+var z{t in 0..T} >= 0; # years cash surplus
+var I{t in 1..T}     ; # Cash Flow in year t
+
+##################
+# Objective
+##################
+
+minimize pot_cost: z[0] + sum{i in 1..N} P[i]*x[i];
+# cost of investing in portfolio
+
+##################
+# Constraints
+##################
+
+subject to cashflow_assignment{t in 1..T}: I[t] -(sum{i in 1..N: M[i] >= t} C[i]*x[i] + sum{i in 1..N: M[i] = t} F[i]*x[i] + (1+rf)*z[t-1] - z[t]) = 0;
+subject to NPV_match: sum{t in 1..T}(1/(1+r[t])**t)*I[t] = sum{t in 1..T}(1/(1+r[t])**t)*L[t];
+subject to Dedication_match: sum{t in 1..T}(t/(1+r[t])**(t+1))*I[t] = sum{t in 1..T}(t/(1+r[t])**(t+1))*L[t];

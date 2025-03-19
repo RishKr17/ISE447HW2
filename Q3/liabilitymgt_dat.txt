@@ -1,0 +1,14 @@
+param liability := 
+1 100
+2 500
+3 100
+4 -600
+5 -500
+6 200
+7 600
+8 -900;
+
+param r2 := 0.08;  # Interest rate for 2-year loan (8% annually)
+param r6 := 0.036; # Interest rate for 6-month loan (3.6% per quarter)
+param r3 := 0.025; # Interest rate for 3-month loan (2.5% per quarter)
+param ri := 0.005; # Interest rate for surplus investment (0.5% per quarter);

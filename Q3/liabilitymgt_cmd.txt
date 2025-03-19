@@ -1,0 +1,3 @@
+solve;
+display wealth;
+display _var, _varname;

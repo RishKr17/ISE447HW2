@@ -1,0 +1,39 @@
+##################
+# Parameters
+##################
+
+param liability{t in 1..8}; # Liabilities every period
+param r2;  # Interest rate for 2-year loan (1% per quarter)
+param r6; # Interest rate for 6-month loan (1.8% per quarter)
+param r3; # Interest rate for 3-month loan (2.5% per quarter)
+param ri; # Interest rate for surplus investment (0.5% per quarter)
+
+##################
+# Variables
+##################
+
+var x >= 0;   # Amount borrowed in Q1 using 2-year loan
+var y {1..6} >= 0;  # 6-month loan for t=1 to 6
+var z {1..7} >= 0;  # 3-month loan for t=1 to 7
+var s {1..8} >= 0;  # Surplus for t=1 to 8
+
+##################
+# Objective
+##################
+
+maximize wealth: s[8];
+
+##################
+# Constraints
+##################
+
+subject to balance_1:
+    x + y[1] + z[1] - s[1] = liability[1];
+
+subject to balance {t in 2..8}:
+    (if t <= 6 then y[t] else 0) + (if t <= 7 then z[t] else 0) 
+    - (if t >= 3 then (1+r6)*y[t-2] else 0)
+    - (if t >= 2 then (1+r3)*z[t-1] else 0)
+    - (1+r2)*x*(if t = 8 then 1 else 0) 
+    + (if t >= 2 then (1+ri)*s[t-1] else 0)
+    - s[t] = liability[t];

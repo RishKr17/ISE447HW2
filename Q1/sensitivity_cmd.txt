@@ -1,0 +1,4 @@
+option cplex_options 'sensitivity';
+solve;
+display _varname, _var, _var.rc;
+display _conname, _con.dual, _con.up, _con.down;

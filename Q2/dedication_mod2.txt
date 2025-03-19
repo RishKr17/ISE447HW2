@@ -1,0 +1,36 @@
+##################
+# Parameters
+##################
+
+param N; # Number of bonds
+param T; # Number of periods
+param L{t in 1..T}; # Liabilities every period
+param P{i in 1..N}; # Bond prices
+param C{i in 1..N}; # Bond coupons
+param M{i in 1..N}; # Bond maturities
+param F{i in 1..N}; # Bond face values
+
+##################
+# Variables
+##################
+
+var x{i in 1..N} >= 0; # number of bonds to buy
+var z{t in 0..T} >= 0; # years cash surplus
+
+##################
+# Objective
+##################
+
+minimize pot_cost: z[0] + sum{i in 1..N} P[i]*x[i];
+# cost of investing in portfolio
+
+##################
+# Constraints
+##################
+
+subject to cash_balance{t in 1..T}: sum{i in 1..N: M[i] >= t} C[i]*x[i] + sum{i in 1..N: M[i] = t} F[i]*x[i] + z[t-1] - z[t] = L[t];
+
+subject to q2_constrain: 
+	sum{i in 1..N} (if i <= 6 then P[i] * x[i])
+	<= 
+		0.5 * sum{j in 1..N} P[j] * x[j] ; 
